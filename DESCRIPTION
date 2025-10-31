@@ -1,0 +1,13 @@
+Package: mxjqkit
+Title: A R Kit Created By Moxingjiqi
+Version: 0.0.2.0000
+Authors@R: 
+    person("AuTrader", "Moxingjiqi", , "aulihong@qq.com", role = c("aut", "cre"))
+Description: R Functions Kit.
+License: GPL (>= 2)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports: 
+    dplyr,
+    ggplot2
