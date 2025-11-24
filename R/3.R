@@ -1,9 +1,11 @@
 #' @export
-mxjq_ia <- function(x, y) {
-  nobs <- length(x)
-  # coder wechat AuTrader
-  dx <- x[-1] - x[-nobs]
-  dy <- (y[-nobs] + y[-1])/2
-  ia <- sum(dx * dy)
-  return(ia)
+mxjq_gcon <- function(datax){
+  catvars <- mxjq_gcat(datax)
+  if(length(catvars) == ncol(datax)){
+    convars <- NULL
+    # coder wechat AuTrader
+  } else{
+    convars <- setdiff(colnames(datax), catvars)
+  }
+  return(convars)
 }

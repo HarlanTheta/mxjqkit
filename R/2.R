@@ -1,11 +1,11 @@
 #' @export
-mxjq_gcon <- function(datax){
-  catvars <- mxjq_gcat(datax)
-  if(length(catvars) == ncol(datax)){
-    convars <- NULL
-    # coder wechat AuTrader
+mxjq_gcat <- function(datax){
+  if(sum(sapply(datax, is.factor)) == 0){
+    catvars <- NULL
   } else{
-    convars <- setdiff(colnames(datax), catvars)
+    # coder wechat AuTrader
+    catvars <-
+      colnames(datax)[sapply(datax, is.factor)]
   }
-  return(convars)
+  return(catvars)
 }

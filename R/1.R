@@ -1,11 +1,21 @@
 #' @export
-mxjq_gcat <- function(datax){
-  if(sum(sapply(datax, is.factor)) == 0){
-    catvars <- NULL
-  } else{
-    # coder wechat AuTrader
-    catvars <-
-      colnames(datax)[sapply(datax, is.factor)]
+mxjq_1se <- function(data, target, mean, sd, minmax){
+  t <- data[[target]]
+  m <- data[[mean]]
+  s <- data[[sd]]
+  # coder wechat AuTrader
+  if (minmax == "min") {
+    mbest <- min(m)
+    mbestat <- which.min(m)
+    mbestsd <- s[mbestat]
+    m1se <- mbest+mbestsd
+    m1set <- t[min(which(m <= m1se))]
+  } else {
+    mbest <- max(m)
+    mbestat <- which.max(m)
+    mbestsd <- s[mbestat]
+    m1se <- mbest-mbestsd
+    m1set <- t[min(which(m >= m1se))]
   }
-  return(catvars)
+  return(m1set)
 }
