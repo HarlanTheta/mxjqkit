@@ -1,28 +1,30 @@
 #' @export
-mxjq_mrocplot <- function(data, colname4p, truthclass, cols){
-  aucs <- c()
+mxjq_mrocplot <- function (data, colname4p, truthclass, cols){
+  rocdf <- data.frame()
   for (i in seq_along(colname4p)) {
     coli <- colname4p[i]
-    probi <- data.frame(A = 1-data[[coli]], B = data[[coli]])
+    probi <- data.frame(A = 1 - data[[coli]], B = data[[coli]])
     actuali <- ifelse(truthclass == coli, "B", "A")
-    roci <-
-      roc(response = actuali, predictor = probi$B,
-          levels = c("A", "B"), direction = "<")
-    # coder wechat AuTrader
+    roci <- roc(response = actuali, predictor = probi$B, 
+                levels = c("A", "B"), direction = "<")
     auci <- auc(roci)
-    aucs[i] <- sprintf("%.4f", as.numeric(auci))
-    if (i == 1) {
-      plot(roci, col = cols[i], las = 1, legacy = T)
-    } else {
-      plot(roci, col = cols[i], add = T)
-    }
+    auci2 <- sprintf("%.4f", as.numeric(auci))
+    rocdfi <- coords(roci)
+    rocdfi$auc <- paste(coli, "AUC:", auci2)
+    rocdf <- rbind(rocdf, rocdfi)
   }
-  aucs2 <- paste(colname4p, "AUC:", aucs)
-  legend("bottomright",
-         aucs2,
-         col = cols,
-         lwd = 2,
-         cex = 0.9)
+  rocplot <- ggplot(rocdf, aes(x = 1 - specificity, y = sensitivity, color = auc)) +
+    geom_path(linewidth = 1) +
+    geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+    scale_x_continuous(expand = c(0, 0), limits = c(0, 1)) + 
+    scale_y_continuous(expand = c(0, 0), limits = c(0, 1)) + 
+    labs(color = "") + 
+    theme_bw() + 
+    theme(panel.grid = element_blank(), 
+          legend.position = "inside", 
+          legend.justification = c(1, 0), 
+          legend.background = element_blank(), 
+          legend.key = element_blank(), 
+          text = element_text(family = "serif"))
+  return(list(result = rocdf, plot = rocplot))
 }
-
-
