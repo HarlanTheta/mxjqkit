@@ -7,12 +7,12 @@ mxjq_proc <- function(roclist, names){
     roci <- roclist[[i]]
     rocresi <- data.frame(
       t(
-        c(iname, 
-          roci$direction, 
+        c(iname,
+          roci$direction,
           sprintf("%.3f", as.numeric(ci.auc(roci))))
       )
     )
-    colnames(rocresi) <- 
+    colnames(rocresi) <-
       c("X", "direction", "auc1", "auc", "auc2")
     # coder wechat AuTrader
     rocdati <- pROC::coords(roci)
@@ -22,7 +22,7 @@ mxjq_proc <- function(roclist, names){
     rocdati$X <- iname
     rocdati2 <- rocresi %>%
       left_join(rocdati, by = "X") %>%
-      mutate(lab = paste0(X, " AUC=", auc, 
+      mutate(lab = paste0(X, " AUC=", auc,
                           "(", auc1, "-", auc2, ")"))
     rocdat[[i]] <- rocdati2
   }
@@ -34,12 +34,16 @@ mxjq_proc <- function(roclist, names){
                color = lab)) +
     geom_path(linewidth = 1) +
     # coder wechat AuTrader
-    geom_abline(slope = 1, 
-                intercept = 0, 
+    geom_abline(slope = 1,
+                intercept = 0,
                 linetype = "dashed") +
-    scale_x_continuous(expand = c(0,0), limits = c(0, 1)) +
-    scale_y_continuous(expand = c(0,0), limits = c(0, 1)) +
-    labs(color = "") +
+    scale_x_continuous(expand = c(0, 0), limits = c(0, 1),
+                       breaks = seq(0, 1, by = 0.2),
+                       labels = c(0, seq(0.2, 0.8, by = 0.2), 1)) +
+    scale_y_continuous(expand = c(0, 0), limits = c(0, 1),
+                       breaks = seq(0, 1, by = 0.2),
+                       labels = c(0, seq(0.2, 0.8, by = 0.2), 1)) +
+    labs(x = "1-Specificity", y = "Sensitivity", color = "") +
     theme_bw() +
     theme(panel.grid = element_blank(),
           legend.position = "inside",
